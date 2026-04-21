@@ -1,0 +1,6 @@
+# Dependencies and build outputs
+/node_modules
+/.next
+/out
+/build
+// ... existing code ...
