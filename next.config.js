@@ -1,3 +1,12 @@
+// Extract the hostname from the SUPABASE_URL safely
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+let supabaseHostname = 'axebywfykhxnqtdyeddk.supabase.co'; // Fallback
+try {
+  if (supabaseUrl) {
+    supabaseHostname = new URL(supabaseUrl).hostname;
+  }
+} catch (e) {}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Gzip/Brotli compress all responses
@@ -11,13 +20,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'axebywfykhxnqtdyeddk.supabase.co',
+        hostname: supabaseHostname,
         port: '',
         pathname: '/storage/v1/object/sign/**',
       },
       {
         protocol: 'https',
-        hostname: 'axebywfykhxnqtdyeddk.supabase.co',
+        hostname: supabaseHostname,
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
