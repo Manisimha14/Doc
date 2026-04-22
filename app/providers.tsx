@@ -13,6 +13,8 @@ interface VaultContextType {
   setVaultName: (name: string) => void;
   user: any;
   isAuthReady: boolean;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (open: boolean) => void;
 }
 
 const VaultContext = createContext<VaultContextType | undefined>(undefined);
@@ -26,6 +28,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
   // isAuthReady signals that auth check has completed — children can use this
   // but we NO LONGER block rendering on it. Children render immediately.
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function initAuth() {
@@ -168,7 +171,17 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <VaultContext.Provider value={{ openUpload, openUploadBulk, closeUpload, vaultName, setVaultName, user, isAuthReady }}>
+    <VaultContext.Provider value={{ 
+      openUpload, 
+      openUploadBulk, 
+      closeUpload, 
+      vaultName, 
+      setVaultName, 
+      user, 
+      isAuthReady,
+      isSidebarOpen,
+      setIsSidebarOpen
+    }}>
       {children}
       <UploadModal
         isOpen={isUploadOpen}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Sidebar from '../components/Sidebar';
 import { VaultProvider } from './providers';
+import { MobileHeader } from '../components/MobileHeader';
 
 export const metadata: Metadata = {
   title: 'Family Archive Vault | Secure Historical Records',
@@ -25,11 +26,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
         />
       </head>
-      <body>
+      <body style={{ margin: 0, padding: 0 }}>
         <VaultProvider>
+          <MobileHeader />
           <div className="app-container" style={{ display: 'flex', minHeight: '100vh' }}>
             <Sidebar />
-            <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+            <main className="main-content" style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
               {children}
             </main>
           </div>

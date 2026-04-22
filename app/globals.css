@@ -12,6 +12,11 @@
   --sidebar-width: 280px;
 }
 
+aside {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -77,6 +82,17 @@ h1, h2, h3, h4 {
 
 .btn-primary:active {
   transform: scale(0.98);
+}
+
+/* Utility */
+.hide-mobile { display: block; }
+@media (max-width: 640px) {
+  .hide-mobile { display: none !important; }
+}
+
+/* Sidebar toggle visibility */
+.app-container aside:hover .sidebar-toggle-btn {
+  opacity: 1 !important;
 }
 
 .glass-card:hover .hover-actions {
@@ -146,17 +162,20 @@ h1 {
   transition: width 1s ease;
 }
 
-/* ── Toast notifications ─────────────────────────────────────── */
-@keyframes toastIn {
-  from { transform: translateX(110%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
 }
-@keyframes toastOut {
-  from { transform: translateX(0);    opacity: 1; }
-  to   { transform: translateX(110%); opacity: 0; }
+
+.timeline-item:hover > div:nth-child(3) {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  transform: translateX(8px);
 }
-.toast-enter { animation: toastIn  0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.toast-exit  { animation: toastOut 0.25s ease-in forwards; }
+
+.lightbox-overlay {
+  animation: fadeIn 0.3s ease-out;
+}
 
 /* ── Share page responsive grid ──────────────────────────────── */
 @keyframes slideUp {
@@ -166,57 +185,135 @@ h1 {
 
 .share-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Header interactions */
+.share-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.3s ease;
 }
 
 /* Tablet */
 @media (max-width: 768px) {
-  .share-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-  .share-stats-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .share-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .share-stats-grid { grid-template-columns: repeat(3, 1fr) !important; overflow-x: auto; padding-bottom: 0.5rem; }
   .share-side-panel { display: none !important; }
 }
 
 /* Mobile */
 @media (max-width: 480px) {
-  .share-grid { grid-template-columns: 1fr; gap: 0.625rem; }
-  .share-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .share-grid { grid-template-columns: 1fr; gap: 0.875rem; }
+  .share-stats-grid { 
+    display: flex !important; 
+    overflow-x: auto; 
+    gap: 0.75rem; 
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+  }
+  .share-stats-grid::-webkit-scrollbar { display: none; }
+  .share-stats-grid > div { min-width: 140px; flex-shrink: 0; }
+  
   .share-side-panel { display: none !important; }
   .share-search-input { font-size: 1rem !important; } /* prevent iOS zoom */
+  
   .share-header-actions { flex-direction: column; align-items: flex-start !important; }
+  
+  .share-banner-title { font-size: 1rem !important; }
 }
 
 .share-bottom-sheet {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   background: rgba(15, 23, 42, 0.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255,255,255,0.12);
-  border-radius: 20px 20px 0 0;
-  padding: 1.5rem 1.25rem 2.5rem;
-  z-index: 60;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px 24px 0 0;
+  padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+  z-index: 100;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 88vh;
+  max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 -20px 40px rgba(0,0,0,0.5);
 }
 
 .mobile-backdrop {
   display: none;
 }
+
 @media (max-width: 768px) {
   .mobile-backdrop {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 55;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    animation: fadeIn 0.3s ease;
   }
 }
 
+/* Skeleton refinements */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
 
 /* Touch-friendly tap targets */
 @media (hover: none) {
-  .share-card-actions button { min-height: 44px; }
-  .glass-card:hover { transform: none; }
+  .share-card-actions button { min-height: 48px; }
+  .glass-card:active { transform: scale(0.98); }
+  .btn-primary:active { transform: scale(0.96); }
+}
+
+/* Premium scrollbar for chips */
+.chips-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.chips-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hover effects for PC */
+@media (hover: hover) {
+  .hover-card:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(99, 102, 241, 0.4) !important;
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ── Layout & Mobile Adjustments ─────────────────────────── */
+.main-content {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .mobile-header {
+    display: flex !important;
+  }
+  .main-content {
+    padding: 1.25rem;
+  }
+  .app-container {
+    flex-direction: column;
+  }
 }

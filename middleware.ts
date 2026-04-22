@@ -37,15 +37,18 @@ export async function middleware(request: NextRequest) {
   // This will refresh session if expired - essential for middleware
   const { data: { user } } = await supabase.auth.getUser();
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup');
+  const isPublicPage = 
+    request.nextUrl.pathname.startsWith('/login') || 
+    request.nextUrl.pathname.startsWith('/signup') ||
+    request.nextUrl.pathname.startsWith('/share');
 
   // 1. Redirect to login if NO user and trying to access private vault
-  if (!user && !isAuthPage) {
+  if (!user && !isPublicPage) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
   // 2. Redirect to dashboard if ALREADY logged in and trying to access login page
-  if (user && isAuthPage) {
+  if (user && (request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup'))) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
