@@ -15,6 +15,14 @@ const supabaseAdmin = createClient(
  */
 export async function POST(req: NextRequest) {
   try {
+    // 0. Auth Check: Ensure only authenticated users can trigger processing
+    const authHeader = req.headers.get('Authorization');
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader?.split(' ')[1] || '');
+    
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized: Processing requires a valid session.' }, { status: 401 });
+    }
+
     const { fileKey, documentId } = await req.json();
 
     if (!fileKey || !documentId) {
