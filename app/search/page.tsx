@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { 
@@ -23,7 +23,7 @@ import { searchDocuments } from '../../services/searchService';
 import { getDocumentPublicUrl, deleteDocument } from '../../services/documentService';
 import { supabase } from '../../lib/supabaseClient';
 
-export default function SearchResultsPage() {
+function SearchResultsContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   
@@ -598,5 +598,13 @@ function SearchAiPanel({ result, query }: { result: any; query: string }) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><Loader2 className="animate-spin" size={32} /></div>}>
+      <SearchResultsContent />
+    </Suspense>
   );
 }

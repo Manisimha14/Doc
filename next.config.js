@@ -37,6 +37,7 @@ const nextConfig = {
     // Tree-shake lucide-react — imports only the icons actually used
     // Dramatically reduces the JS bundle size
     optimizePackageImports: ['lucide-react'],
+    serverComponentsExternalPackages: ['pdf-parse', 'tesseract.js'],
   },
 };
 
